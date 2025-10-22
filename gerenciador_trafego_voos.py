@@ -1,15 +1,15 @@
 voos ={}
 log = []
-possiveis_status = ['Cancelado', 'Agendado']
+possiveis_status = ['Cancelado', 'Agendado', 'Alterado']
 
-def adicionar_voo(voos, codigo, destino, horario):
+def adicionar_voo(codigo, destino, horario):
     voos[codigo] = {}
     voos[codigo]['destino'] = destino
     voos[codigo]['horario'] = horario
     voos[codigo]['status'] = 'Agendado'
     log.append(f'Voo {codigo} adicionado com sucesso.')
 
-def alterar_status(voos, codigo, novo_status): 
+def alterar_status(codigo, novo_status): 
     try:
         if novo_status in possiveis_status:
             voos[codigo]['status'] = novo_status
@@ -17,7 +17,7 @@ def alterar_status(voos, codigo, novo_status):
     except ValueError as a:
             log.append(f'Erro ao alterar o status: {a}')
 
-def listar_voos(voos, status=None):
+def listar_voos(status=None):
     if not status:
       print(voos)
     for codigo_voo, informacoes_voo in voos.items():
@@ -38,10 +38,14 @@ def consultar_voo(codigo):
     log.append(f'Fez uma consulta do voo {codigo}')
     print(voos[codigo])
 
-adicionar_voo(voos, 'VB999', 'Canela', '06:00')
+adicionar_voo('VB999', 'Canela', '06:00')
+adicionar_voo('TMJ69', 'Sao Paulo', '01:00')
 consultar_voo('VB999')
+alterar_status('VB999', 'Alterado')
+print(listar_voos())
 cancelar_voo(voos,'VB999')
-print(listar_voos(voos))
+consultar_voo('VB999')
+
 
 with open('log.txt', 'w', encoding='utf-8') as f:
     for ocorrencia in log:
