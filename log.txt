@@ -1,0 +1,4 @@
+Voo VB999 adicionado com sucesso.
+Fez uma consulta do voo VB999
+Voo VB999 foi cancelado.
+Efetuou uma listagem dos voos
