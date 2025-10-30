@@ -1,7 +1,7 @@
-Voo VB999 adicionado com sucesso.
-Voo TMJ69 adicionado com sucesso.
-Fez uma consulta do voo VB999
-Voo VB999 teve seu status alterado para Alterado
+Voo VB999 adicionado com sucesso
+Voo AB123 adicionado com sucesso
+Consultou o voo VB999
+Voo VB999 teve seu status alterado para Atrasado
 Efetuou uma listagem dos voos
-Voo VB999 foi cancelado.
-Fez uma consulta do voo VB999
+Voo VB999 teve seu status alterado para Cancelado
+Esse código não existe
