@@ -1,4 +1,5 @@
 from datetime import time, datetime, timedelta
+import uuid
 
 voos = {}
 log = []
@@ -17,10 +18,13 @@ BLOCK_TIMES = {
     "POAxCNF": "02:12:00",
 }
 CIDADES_POSSIVEIS = ['CGH', 'SDU', 'BSB', 'CNF', 'POA']
+ORIGEM = 'POA'
+
 
 def to_timedelta(hms: str) -> timedelta:
     h, m, s = map(int, hms.split(":"))
     return timedelta(hours=h, minutes=m, seconds=s)
+
 
 def fmt(td: timedelta) -> str:
     total = int(td.total_seconds())
@@ -29,34 +33,27 @@ def fmt(td: timedelta) -> str:
     s = total % 60
     return f"{h:02d}:{m:02d}:{s:02d}"
 
-def adicionar_voo(codigo, destino, horario, origem, aeroporto_final, escala = None):
+
+def adicionar_voo(codigo, horario, aeroporto_final, escalas=[]):
     if codigo in voos:
         log.append('Esse voo já existe')
         return False
-    if not all(cidades in CIDADES_POSSIVEIS for cidades in (origem, aeroporto_final, escala) if cidades):
-        log.append('Cidade indisponível')
-        return False
-    if not escala:
-        identificar_voo_sem_escala = (origem + "x" + aeroporto_final)
-        estimativa_de_tempo = to_timedelta(BLOCK_TIMES[identificar_voo_sem_escala])
-        voos[codigo] = {
-            'destino': destino,
-            'horario': horario,
-            'status': 'Agendado',
-            'tempo aproximado': fmt(estimativa_de_tempo)
-        }
-        log.append(f'Voo {codigo} adicionado com sucesso')
-    else:
-        identificar_com_escala = (origem + "x" + escala)
-        escala_destino_final = (escala + "x" + aeroporto_final)
-        estimativa_de_tempo = (to_timedelta(BLOCK_TIMES[identificar_com_escala]) + to_timedelta(BLOCK_TIMES[escala_destino_final]))
-        voos[codigo] = {
-            'destino': destino,
-            'horario': horario,
-            'status': 'Agendado',
-            'tempo aproximado': fmt(estimativa_de_tempo)
-        }
-        log.append(f'Voo {codigo} adicionado com sucesso')
+    ultima_escala = ORIGEM
+    estimativa_de_tempo = timedelta()
+    for escala in escalas:
+        rota = (ultima_escala + 'x' + escala)
+        estimativa_de_tempo += (to_timedelta(BLOCK_TIMES[rota]))
+        ultima_escala = escala
+    rota_final = (ultima_escala + 'x' + aeroporto_final)
+    estimativa_de_tempo += (to_timedelta(BLOCK_TIMES[rota_final]))
+    voos[codigo] = {
+        'destino': aeroporto_final,
+        'horario': horario,
+        'status': 'Agendado',
+        'tempo aproximado': fmt(estimativa_de_tempo)
+    }
+    log.append(f'Voo {codigo} adicionado com sucesso')
+
 
 def alterar_status(codigo, novo_status):
     if codigo not in voos:
@@ -94,13 +91,32 @@ def consultar_voo(codigo):
         log.append(f'Consultou o voo {codigo}')
 
 
-adicionar_voo('VB999', 'Canela', '06:00', 'POA', 'BSB', 'CGH')
-adicionar_voo('AB123', 'Sao Paulo', '01:00', 'POA', 'BSB')
+passagens_compradas = {}
+def comprar_passagem(codigo, nome_do_passageiro,):
+    id_compra = uuid.uuid4().hex
+    passagens_compradas[id_compra] = {
+        'Codigo do voo': codigo,
+        'Nome': nome_do_passageiro,
+        'Status do pagamento': 'Pendente',
+    }
+    log.append(f'O passageiro {nome_do_passageiro} comprou uma passagem para o voo {codigo}, código de compra {id_compra}')
+    return id_compra
+
+passagem = comprar_passagem('VB999', 'VINICIUS')
+
+def pagar_passagem(id_compra):
+    passagens_compradas[id_compra]['Status do pagamento'] = 'Pago'
+    log.append(f'A passagem {passagens_compradas[id_compra]} foi paga.')
+
+
+adicionar_voo('VB999', '06:00', 'BSB')
+adicionar_voo('AB123', '01:00', 'CNF', ['CGH'])
 consultar_voo('VB999')
 alterar_status('VB999', 'Atrasado')
 print(listar_voos())
 cancelar_voo('VB999')
 consultar_voo('VB99')
+pagar_passagem(passagem)
 
 
 with open('log.txt', 'w', encoding='utf-8') as f:
