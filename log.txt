@@ -1,9 +1,9 @@
-O passageiro VINICIUS comprou uma passagem para o voo VB999, código de compra f70a847e5ba6484f81e05ad96c664b80
 Voo VB999 adicionado com sucesso
-Voo AB123 adicionado com sucesso
+O passageiro VINICIUS comprou uma passagem para o voo VB999, levando 2, código de compra 6b87d3eb774b4f4792812caed21fba08
+Voo TNC000 adicionado com sucesso
 Consultou o voo VB999
 Voo VB999 teve seu status alterado para Atrasado
-Efetuou uma listagem dos voos
-Voo VB999 teve seu status alterado para Cancelado
+Voo TNC000 teve seu status alterado para Cancelado
 Esse código não existe
-A passagem {'Codigo do voo': 'VB999', 'Nome': 'VINICIUS', 'Status do pagamento': 'Pago'} foi paga.
+A passagem {'Codigo do voo': 'VB999', 'Nome': 'VINICIUS', 'Status do pagamento': 'Pago', 'Bagagens': 2} foi paga.
+Efetuou uma listagem dos voos
